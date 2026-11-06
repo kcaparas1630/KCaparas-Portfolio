@@ -32,7 +32,6 @@ const SPECULATION_RULES = JSON.stringify({
       where: {
         and: [
           { href_matches: '/*' },
-          { not: { href_matches: '/admin/*' } },
           { not: { href_matches: '/api/*' } },
         ],
       },

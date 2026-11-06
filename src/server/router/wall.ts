@@ -7,7 +7,7 @@ import type { ModerationResult, Note } from '@/entities/note/model/types';
 import { config } from '@/server/lib/env';
 import { moderate, statusForVerdict } from '@/server/lib/moderation/moderate';
 import { audit } from '@/server/lib/notes/audit';
-import { checkRateLimit } from '@/server/lib/notes/rate-limit';
+import { checkRateLimit } from '@/server/lib/rate-limit';
 import { notifySlack } from '@/server/lib/notes/slack';
 import {
   createNote,

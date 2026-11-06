@@ -1,6 +1,7 @@
 import { cookies } from 'next/headers';
 import { AdminLogin, LogoutButton } from '@/features/admin-auth';
 import { ADMIN_COOKIE, verifyAdminCookieValue } from '@/server/lib/admin-cookie';
+import { ADMIN_WALL_PATH } from '@/shared/lib/admin-routes';
 import '@/shared/styles/wall.css';
 import styles from './admin-login.module.css';
 
@@ -15,7 +16,7 @@ export async function AdminLoginView() {
         <div className="admin-dash">
           <p>you&apos;re in. choose an area.</p>
           <nav className="admin-links">
-            <a className="wall-btn" href="/admin/wall">
+            <a className="wall-btn" href={ADMIN_WALL_PATH}>
               manage the wall →
             </a>
           </nav>

@@ -10,6 +10,7 @@ import {
 } from '@/server/lib/admin-cookie';
 import { isProd } from '@/server/lib/env';
 import { audit } from '@/server/lib/notes/audit';
+import { checkLoginRateLimit } from '@/server/lib/rate-limit';
 import {
   getApprovedNotesFull,
   getPendingNotes,
@@ -22,7 +23,13 @@ import { adminProcedure, publicProcedure, router } from '@/server/lib/trpc';
 const LIMIT = 200;
 
 export const adminRouter = router({
+  // The one public procedure here: it is what creates the session adminProcedure
+  // checks for. The token is the gate, the rate limit stops brute forcing it.
   login: publicProcedure.input(z.object({ token: z.string().min(1) })).mutation(async ({ ctx, input }) => {
+    const rate = await checkLoginRateLimit(ctx.ip);
+    if (!rate.success) {
+      throw new TRPCError({ code: 'TOO_MANY_REQUESTS', message: 'Too many attempts. Try again later.' });
+    }
     if (!tokenMatches(input.token)) {
       throw new TRPCError({ code: 'UNAUTHORIZED', message: 'Invalid token.' });
     }
@@ -36,7 +43,7 @@ export const adminRouter = router({
     return { ok: true } as const;
   }),
 
-  logout: publicProcedure.mutation(async ({ ctx }) => {
+  logout: adminProcedure.mutation(async ({ ctx }) => {
     ctx.cookies.delete({ name: ADMIN_COOKIE, path: '/' });
     return { ok: true } as const;
   }),

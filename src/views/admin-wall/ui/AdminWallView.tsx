@@ -1,3 +1,4 @@
+import { ADMIN_PATH } from '@/shared/lib/admin-routes';
 import { AdminNotes } from '@/widgets/admin-notes';
 import styles from './admin-wall.module.css';
 
@@ -7,7 +8,7 @@ export function AdminWallView() {
   return (
     <section className={styles.intro}>
       <p className={styles.back}>
-        <a href="/admin">← admin</a>
+        <a href={ADMIN_PATH}>← admin</a>
       </p>
       <h2 className={styles.title}>the wall · admin</h2>
       <AdminNotes />

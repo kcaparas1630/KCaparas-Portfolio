@@ -1,11 +1,12 @@
 'use client';
 
 import { useAdminLogout } from '@/entities/admin-session';
+import { ADMIN_PATH } from '@/shared/lib/admin-routes';
 
 export function LogoutButton() {
   const logout = useAdminLogout({
     onSettled() {
-      window.location.href = '/admin';
+      window.location.href = ADMIN_PATH;
     },
   });
 

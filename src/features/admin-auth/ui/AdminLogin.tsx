@@ -2,6 +2,7 @@
 
 import { useState, type FormEvent } from 'react';
 import { useAdminLogin } from '@/entities/admin-session';
+import { ADMIN_WALL_PATH } from '@/shared/lib/admin-routes';
 
 export function AdminLogin() {
   const [token, setToken] = useState('');
@@ -9,7 +10,7 @@ export function AdminLogin() {
 
   const login = useAdminLogin({
     onSuccess() {
-      window.location.href = '/admin/wall';
+      window.location.href = ADMIN_WALL_PATH;
     },
     onError(err) {
       setError(err.message || 'Login failed.');
