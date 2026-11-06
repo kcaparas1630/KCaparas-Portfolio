@@ -12,7 +12,7 @@ function run(command, args, env = {}) {
   return result.status ?? 1;
 }
 
-const started = run('docker', ['compose', 'up', '--detach', '--wait']);
+const started = run('docker', ['compose', 'up', '--detach', '--wait', 'postgres']);
 if (started !== 0) {
   console.error('\nCould not start the database. Is Docker Desktop running?');
   process.exit(started);

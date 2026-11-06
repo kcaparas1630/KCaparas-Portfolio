@@ -23,6 +23,13 @@ const schema = z.object({
   DATABASE_URL: z.url(),
   WALL_ADMIN_TOKEN: z.string(),
 
+  AWS_REGION: z.string(),
+  AWS_S3_BUCKET: z.string(),
+  AWS_ACCESS_KEY_ID: z.string(),
+  AWS_SECRET_ACCESS_KEY: z.string(),
+  // Local MinIO only. Leave unset in production to use AWS S3.
+  S3_ENDPOINT: z.url().optional(),
+
   // Optional only until notes move to Postgres, then these go away. Without
   // them the wall and admin login fail per request, the rest of the site works.
   UPSTASH_REDIS_REST_URL: z.url().optional(),
