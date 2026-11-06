@@ -15,9 +15,9 @@ export const PostFrontmatterSchema = z.object({
 export type PostFrontmatter = z.output<typeof PostFrontmatterSchema>;
 
 export interface Post {
-  /** slug, the filename without extension (a row id once posts move to a table) */
+  /** the slug */
   id: string;
   data: PostFrontmatter;
-  /** raw MDX body */
-  body: string;
+  /** where the MDX body lives in object storage */
+  s3Key: string;
 }

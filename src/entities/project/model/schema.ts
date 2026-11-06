@@ -17,9 +17,9 @@ export const ProjectFrontmatterSchema = z.object({
 export type ProjectFrontmatter = z.output<typeof ProjectFrontmatterSchema>;
 
 export interface Project {
-  /** slug, the filename without extension */
+  /** the slug */
   id: string;
   data: ProjectFrontmatter;
-  /** raw MDX body */
-  body: string;
+  /** where the MDX body lives in object storage */
+  s3Key: string;
 }
