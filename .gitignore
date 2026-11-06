@@ -1,19 +1,23 @@
 # build output
+.next/
+out/
 dist/
-# generated types
-.astro/
+next-env.d.ts
 # dependencies
 node_modules/
 # logs
 npm-debug.log*
+*.log
 # environment variables
 .env
+.env*.local
 .env.production
 # macOS
 .DS_Store
 # vercel
 .vercel
+# tooling
 .agents
-*.log
 .hallmark
 skills-lock.json
+*.tsbuildinfo

@@ -1,0 +1,186 @@
+.hero {
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  margin-top: -48px;
+}
+
+.inner {
+  max-width: 1120px;
+  min-height: calc(100svh - 64px);
+  margin: 0 auto;
+  padding: 0 24px 48px;
+  display: grid;
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+  align-items: center;
+  gap: 16px;
+}
+
+.text {
+  position: relative;
+  z-index: 2;
+}
+
+.name {
+  margin: 0 0 24px;
+  font-family: var(--font-display);
+  font-size: clamp(46px, 7vw, 90px); /* Basteleur runs wide */
+  font-weight: 800;
+  line-height: 0.95;
+  letter-spacing: -0.035em;
+}
+
+.dot {
+  color: var(--color-accent-soft);
+}
+
+.tagline {
+  margin: 0 0 12px;
+  font-size: 19px;
+  color: var(--color-ink-dim);
+}
+
+.slashes {
+  color: var(--color-ink);
+}
+
+.role {
+  margin: 0;
+  max-width: 360px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  line-height: 1.6;
+  color: var(--color-ink-faint);
+}
+
+.role a {
+  color: var(--color-ink-dim);
+  text-decoration: underline;
+  text-decoration-color: var(--color-line);
+  text-underline-offset: 0.2em;
+  transition: color var(--dur-fast) var(--ease-out);
+}
+
+.role a:hover {
+  color: var(--color-accent);
+}
+
+/* ── globe ── */
+.slot {
+  position: relative;
+  justify-self: end;
+  width: min(640px, 100%);
+  aspect-ratio: 1;
+  touch-action: none; /* the globe owns every gesture it starts, the text below still scrolls */
+  cursor: grab;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.slot:global(.is-over-word) {
+  cursor: pointer;
+}
+
+.slot:global(.is-grabbing) {
+  cursor: grabbing;
+}
+
+.hint {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: 0;
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: var(--color-ink-faint);
+  transition: opacity 0.6s var(--ease-out);
+}
+
+.hint span {
+  color: var(--color-accent);
+}
+
+.slot:global(.was-dragged) .hint {
+  opacity: 0;
+}
+
+/* the hint leaves with the globe */
+@supports (animation-timeline: scroll()) {
+  .hint {
+    animation: hint-out linear both;
+    animation-timeline: scroll();
+    animation-range: 0 160px;
+  }
+}
+
+@keyframes hint-out {
+  to {
+    opacity: 0;
+  }
+}
+
+/* fixed to the viewport so it can shrink into the corner, JS sets size and place */
+.slot :global(.globe) {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  padding: 0;
+  border: 0;
+  background: none;
+  transform-origin: 0 0;
+  pointer-events: none;
+  visibility: hidden;
+  will-change: transform;
+}
+
+.slot :global(.globe.is-ready) {
+  visibility: visible;
+}
+
+.slot :global(.globe canvas) {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.slot :global(.globe.is-mini) {
+  z-index: 60; /* parks above the header */
+  pointer-events: auto;
+  cursor: pointer;
+  border-radius: 50%;
+}
+
+.slot :global(.globe.is-mini:focus-visible) {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+@media (max-width: 760px) {
+  .hero {
+    margin-top: -24px;
+  }
+  .inner {
+    grid-template-columns: 1fr;
+    min-height: auto;
+    padding: 0 20px 40px;
+    gap: 8px;
+  }
+  .slot {
+    order: -1;
+    justify-self: center;
+    width: min(440px, 100%);
+  }
+}
+
+/* reduced motion: the globe stays in its slot */
+@media (prefers-reduced-motion: reduce) {
+  .slot :global(.globe) {
+    position: absolute;
+    transform: none !important;
+    width: 100% !important;
+    height: 100% !important;
+  }
+}
