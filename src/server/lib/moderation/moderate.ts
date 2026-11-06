@@ -1,10 +1,14 @@
 import 'server-only';
 import Anthropic from '@anthropic-ai/sdk';
 import { zodOutputFormat } from '@anthropic-ai/sdk/helpers/zod';
-import { config, requireEnv } from '@/server/lib/env';
+import { env } from '@/server/lib/env';
 import type { ModerationResult, NoteStatus, Submission } from '@/entities/note/model/types';
 import { MODERATION_PROMPT } from './prompt';
 import { ModerationResultSchema } from './schema';
+
+// maxRetries 0 keeps us inside the latency budget; a transient blip falls back
+// to pending rather than stalling.
+const anthropic = new Anthropic({ apiKey: env.ANTHROPIC_API_KEY, maxRetries: 0 });
 
 const TIMEOUT_MS = 8000;
 
@@ -37,14 +41,10 @@ export interface ModerationOutcome {
 }
 
 export async function moderate(sub: Submission): Promise<ModerationOutcome> {
-  // Per-request client (no shared singleton) — maxRetries 0 keeps us inside the
-  // latency budget; a transient blip falls back to pending rather than stalling.
-  const client = new Anthropic({ apiKey: requireEnv('ANTHROPIC_API_KEY'), maxRetries: 0 });
-
   try {
-    const message = await client.messages.parse(
+    const message = await anthropic.messages.parse(
       {
-        model: config.moderationModel,
+        model: env.WALL_MODERATION_MODEL,
         max_tokens: 200,
         system: MODERATION_PROMPT,
         messages: [{ role: 'user', content: buildUserMessage(sub) }],

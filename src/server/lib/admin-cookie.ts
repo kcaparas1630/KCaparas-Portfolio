@@ -1,6 +1,6 @@
 import 'server-only';
 import { createHmac, timingSafeEqual } from 'node:crypto';
-import { config } from '@/server/lib/env';
+import { env } from '@/server/lib/env';
 
 export const ADMIN_COOKIE = 'wall_admin';
 export const ADMIN_COOKIE_MAX_AGE = 60 * 60 * 24 * 7; // 7 days
@@ -21,17 +21,15 @@ function safeEqual(a: string, b: string): boolean {
 }
 
 export function makeAdminCookieValue(): string {
-  return sign(config.adminToken);
+  return sign(env.WALL_ADMIN_TOKEN);
 }
 
 export function verifyAdminCookieValue(value: string | undefined | null): boolean {
-  const secret = config.adminToken;
-  if (!secret || !value) return false;
-  return safeEqual(value, sign(secret));
+  if (!value) return false;
+  return safeEqual(value, sign(env.WALL_ADMIN_TOKEN));
 }
 
 export function tokenMatches(provided: string | undefined | null): boolean {
-  const secret = config.adminToken;
-  if (!secret || !provided) return false;
-  return safeEqual(provided, secret);
+  if (!provided) return false;
+  return safeEqual(provided, env.WALL_ADMIN_TOKEN);
 }
