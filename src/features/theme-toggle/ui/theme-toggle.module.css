@@ -1,0 +1,63 @@
+.toggle {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  border: 1px solid var(--color-line);
+  border-radius: 50%;
+  background: transparent;
+  color: var(--color-ink-dim);
+  cursor: pointer;
+  transition:
+    color var(--dur-fast) var(--ease-out),
+    border-color var(--dur-fast) var(--ease-out),
+    background-color var(--dur-fast) var(--ease-out);
+}
+
+.toggle:hover {
+  color: var(--color-accent);
+  border-color: var(--color-accent);
+  background: rgba(var(--color-glow), 0.06);
+}
+
+.icon {
+  grid-area: 1 / 1;
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition:
+    opacity var(--dur-mid) var(--ease-out),
+    rotate var(--dur-mid) var(--ease-out),
+    scale var(--dur-mid) var(--ease-out);
+}
+
+.moon {
+  opacity: 0;
+  rotate: -90deg;
+  scale: 0.6;
+}
+
+:global([data-theme='dusk']) .sun {
+  opacity: 0;
+  rotate: 90deg;
+  scale: 0.6;
+}
+
+:global([data-theme='dusk']) .moon {
+  opacity: 1;
+  rotate: 0deg;
+  scale: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .icon,
+  .toggle {
+    transition: none;
+  }
+}

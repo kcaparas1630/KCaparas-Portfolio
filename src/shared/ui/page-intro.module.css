@@ -1,0 +1,35 @@
+.intro {
+  padding: 40px 0 48px;
+}
+
+.title {
+  margin: 0 0 12px;
+  font-family: var(--font-display);
+  font-size: clamp(38px, 7vw, 60px);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+
+.lede {
+  margin: 0;
+  max-width: 520px;
+  font-size: 17px;
+  color: var(--color-ink-dim);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .intro > * {
+    animation: rise 0.6s var(--ease-out) both;
+  }
+  .lede {
+    animation-delay: 80ms;
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    translate: 0 12px;
+  }
+}

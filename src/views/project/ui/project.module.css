@@ -1,0 +1,118 @@
+.head {
+  padding-top: 40px;
+  margin-bottom: 40px;
+  padding-bottom: 32px;
+  border-bottom: 1px solid var(--color-line);
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 16px;
+}
+
+.name {
+  font-family: var(--font-display);
+  margin: 0;
+  font-weight: 700;
+  font-size: clamp(34px, 6vw, 52px);
+  letter-spacing: -0.02em;
+  line-height: 1.05;
+}
+
+.status {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-ink-faint);
+  white-space: nowrap;
+}
+.live {
+  color: var(--color-good);
+}
+.broken {
+  color: var(--color-accent);
+}
+.wip {
+  color: var(--color-ink-dim);
+}
+
+.desc {
+  margin-top: 12px;
+  color: var(--color-ink-dim);
+  font-size: 16px;
+}
+
+.tags {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 14px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--color-ink-faint);
+}
+
+.links {
+  display: flex;
+  gap: 18px;
+  margin-top: 18px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+}
+.links a {
+  color: var(--color-accent);
+  text-decoration: none;
+  border-bottom: 1px solid var(--color-line);
+}
+.links a:hover {
+  border-bottom-color: var(--color-accent);
+}
+
+.prose {
+  font-family: var(--font-sans);
+  font-size: 19px;
+  line-height: 1.7;
+  color: var(--color-ink);
+}
+.prose p,
+.prose ul {
+  margin: 0 0 20px;
+}
+.prose ul {
+  padding-left: 1.2em;
+  list-style: disc;
+}
+.prose li::marker {
+  color: var(--color-accent);
+}
+.prose li + li {
+  margin-top: 8px;
+}
+.prose a {
+  color: var(--color-accent);
+}
+.prose code {
+  font-family: var(--font-mono);
+  font-size: 0.8em;
+  background: var(--color-bg-soft);
+  padding: 0.15em 0.4em;
+  border-radius: 4px;
+}
+
+.back {
+  margin-top: 56px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+}
+.back a {
+  color: var(--color-ink-dim);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+}
+.back a:hover {
+  color: var(--color-accent);
+  border-bottom-color: var(--color-accent);
+}
