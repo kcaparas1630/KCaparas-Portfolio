@@ -1,20 +1,10 @@
 import 'server-only';
-import { Redis } from '@upstash/redis';
-import { requireEnv } from '@/server/lib/env';
+import { redis } from '@/server/lib/redis';
 import { toPublicNote } from '@/entities/note/model/types';
 import type { Note, NoteStatus, PublicNote, Topic } from '@/entities/note/model/types';
 
 // Storage boundary for notes. Redis today; the Drizzle/Supabase table replaces
 // the internals of this module without touching callers.
-
-// Upstash Redis is a stateless REST client (no connection pool), so a fresh
-// instance per call is cheap and avoids shared mutable state.
-export function getRedis(): Redis {
-  return new Redis({
-    url: requireEnv('UPSTASH_REDIS_REST_URL'),
-    token: requireEnv('UPSTASH_REDIS_REST_TOKEN'),
-  });
-}
 
 const KEY = {
   note: (id: string) => `wall:note:${id}`,
@@ -74,7 +64,6 @@ function noteToRow(note: Note): Record<string, string | number> {
 }
 
 export async function createNote(note: Note): Promise<void> {
-  const redis = getRedis();
   const score = new Date(note.createdAt).getTime();
   await redis.hset(KEY.note(note.id), noteToRow(note));
   const setKey = setKeyForStatus(note.status);
@@ -82,12 +71,11 @@ export async function createNote(note: Note): Promise<void> {
 }
 
 export async function getNote(id: string): Promise<Note | null> {
-  const row = await getRedis().hgetall(KEY.note(id));
+  const row = await redis.hgetall(KEY.note(id));
   return rowToNote(row as Record<string, unknown> | null);
 }
 
 async function getNotesFromSet(setKey: string, limit: number): Promise<Note[]> {
-  const redis = getRedis();
   const ids = (await redis.zrange(setKey, 0, limit - 1, { rev: true })) as string[];
   if (!ids.length) return [];
   const pipeline = redis.pipeline();
@@ -116,7 +104,6 @@ export async function getApprovedNotesFull({ limit = 100 }: { limit?: number } =
 }
 
 export async function updateNoteStatus(id: string, newStatus: NoteStatus): Promise<Note | null> {
-  const redis = getRedis();
   const note = await getNote(id);
   if (!note) return null;
 
@@ -135,7 +122,6 @@ export async function updateNoteStatus(id: string, newStatus: NoteStatus): Promi
 }
 
 export async function softDeleteNote(id: string): Promise<Note | null> {
-  const redis = getRedis();
   const note = await getNote(id);
   if (!note) return null;
 
@@ -148,17 +134,16 @@ export async function softDeleteNote(id: string): Promise<Note | null> {
 }
 
 export async function appendAudit(entry: Record<string, unknown>): Promise<void> {
-  await getRedis().rpush(KEY.audit, JSON.stringify(entry));
+  await redis.rpush(KEY.audit, JSON.stringify(entry));
 }
 
 // Daily moderation counter for the cost cap. TTL just past 24h so it self-clears.
 export async function getDailyModerations(): Promise<number> {
   const day = new Date().toISOString().slice(0, 10);
-  return (await getRedis().get<number>(KEY.dailyModerations(day))) ?? 0;
+  return (await redis.get<number>(KEY.dailyModerations(day))) ?? 0;
 }
 
 export async function incrementDailyModerations(): Promise<number> {
-  const redis = getRedis();
   const day = new Date().toISOString().slice(0, 10);
   const key = KEY.dailyModerations(day);
   const count = await redis.incr(key);

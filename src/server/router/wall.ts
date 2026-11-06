@@ -4,7 +4,7 @@ import { nanoid } from 'nanoid';
 import { z } from 'zod';
 import { SubmissionSchema } from '@/entities/note/model/schema';
 import type { ModerationResult, Note } from '@/entities/note/model/types';
-import { config } from '@/server/lib/env';
+import { env } from '@/server/lib/env';
 import { moderate, statusForVerdict } from '@/server/lib/moderation/moderate';
 import { audit } from '@/server/lib/notes/audit';
 import { checkRateLimit } from '@/server/lib/rate-limit';
@@ -60,7 +60,7 @@ export const wallRouter = router({
     let result: ModerationResult;
     let moderated: boolean;
     const used = await getDailyModerations();
-    if (used >= config.dailyMaxModerations) {
+    if (used >= env.WALL_DAILY_MAX_MODERATIONS) {
       result = { verdict: 'flag', confidence: 0, reason: 'daily_cap_reached' };
       moderated = false;
     } else {
@@ -71,7 +71,7 @@ export const wallRouter = router({
     }
 
     // 5. Decide bucket and persist.
-    const status = statusForVerdict(result, config.publicResults);
+    const status = statusForVerdict(result, env.WALL_PUBLIC_RESULTS);
     const note: Note = {
       id: nanoid(12),
       name: submission.name,

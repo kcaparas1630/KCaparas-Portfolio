@@ -1,0 +1,36 @@
+name: Migrate database
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'drizzle/**'
+  workflow_dispatch:
+
+# Never run two migrations at once, and never cancel one partway through.
+concurrency:
+  group: migrate-database
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: '1.2.18'
+      - run: bun install --frozen-lockfile
+      - name: Apply migrations to Supabase
+        env:
+          DATABASE_MIGRATION_URL: ${{ secrets.DATABASE_MIGRATION_URL }}
+        run: |
+          if [ -z "$DATABASE_MIGRATION_URL" ]; then
+            echo "::error::The DATABASE_MIGRATION_URL repository secret is not set."
+            exit 1
+          fi
+          bun run db:migrate

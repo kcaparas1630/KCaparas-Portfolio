@@ -1,5 +1,5 @@
 import 'server-only';
-import { config } from '@/server/lib/env';
+import { env } from '@/server/lib/env';
 
 // Defense-in-depth: validation runs before any moderation call so we never
 // burn an Anthropic request on garbage, and never store raw HTML.
@@ -11,11 +11,11 @@ export function containsHtml(input: string): boolean {
 }
 
 // Coarse filter for low-effort prompt-injection. Patterns are loaded from a
-// private env var (see config.injectionPatterns), never hardcoded here — the
+// private env var (see WALL_INJECTION_PATTERNS), never hardcoded here — the
 // repo is public, and a visible pattern list is a published bypass guide. The
 // real defense is treating user content as data + the human pending queue.
 export function looksLikeInjection(input: string): boolean {
-  return config.injectionPatterns.some((re) => re.test(input));
+  return env.WALL_INJECTION_PATTERNS.some((re) => re.test(input));
 }
 
 // Collapse runs of whitespace and trim. We reject HTML outright rather than
